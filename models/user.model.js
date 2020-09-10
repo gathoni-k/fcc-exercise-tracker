@@ -8,11 +8,11 @@ const formatDate = () => {
 }
 const UserSchema = new Schema({
   username: String,
-  userId: mongoose.Types.ObjectId,
   description: String,
   duration: String,
   date: {
-    type: Date, default: formatDate()
+    type: Date,
+    default: formatDate()
   }
 })
 module.exports = mongoose.model('User', UserSchema)
