@@ -17,5 +17,17 @@ module.exports = {
     } catch (error) {
       res.json({ error: error.message })
     }
+  },
+  getUsers: async (req, res) => {
+    try {
+      const users = await User.find()
+      res.json({
+        users
+      })
+    } catch (error) {
+      res.json({
+        error: error.message
+      })
+    }
   }
 }
