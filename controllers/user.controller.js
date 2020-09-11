@@ -68,59 +68,58 @@ module.exports = {
   },
   getExerciseLog: async (req, res) => {
     try {
-      const { fromDate, toDate, limit } = req.query;
+      const { fromDate, toDate, limit } = req.query
       if (!fromDate || !toDate) {
         if (limit) {
           await User.findOne({ _id: req.body.userId })
-          .limit(limit)
-          .populate('exercises')
-          .exec(function (err, user) {
-          if (err) throw Error(err)
-          return res.json(
-            {
-              user,
-              count: user.exercises.length
-            }
-          )
-        })
+            .limit(limit)
+            .populate('exercises')
+            .exec(function (err, user) {
+              if (err) throw Error(err)
+              return res.json(
+                {
+                  user,
+                  count: user.exercises.length
+                }
+              )
+            })
         }
         await User.findOne({ _id: req.body.userId })
-        .populate('exercises')
-        .exec(function (err, user) {
-          if (err) throw Error(err)
-          return res.json(
-            {
-              user,
-              count: user.exercises.length
-            }
-          )
-        })
+          .populate('exercises')
+          .exec(function (err, user) {
+            if (err) throw Error(err)
+            return res.json(
+              {
+                user,
+                count: user.exercises.length
+              }
+            )
+          })
       }
       // date has been passed
 
-
-      await User.findOne({ _id: req.body.userId})
+      await User.findOne({ _id: req.body.userId })
         .populate('exercises')
         .exec(function (err, user) {
           if (err) throw Error(err)
           const filteredExercises = user.exercises
-          if (fromDate ) {
+          if (fromDate) {
             filteredExercises = filteredExercises.filter(exercise => {
               exercise.date > new Date(fromDate)
             })
           }
-          if (toDate ) {
+          if (toDate) {
             filteredExercises = filteredExercises.filter(exercise => {
               exercise.date < new Date(toDate)
             })
           }
           filteredExercises = filteredExercises
-          .sort((currentExercise, nextExercise) => currentExercise.date > nextExercise.date)
-          .map(exercise => ({
-            description: exercise.description,
-            duration: exercise.duration,
-            date: exercise.date.toLocaleDateString()
-         }));
+            .sort((currentExercise, nextExercise) => currentExercise.date > nextExercise.date)
+            .map(exercise => ({
+              description: exercise.description,
+              duration: exercise.duration,
+              date: exercise.date.toLocaleDateString()
+            }))
           res.json(
             {
               user: {
