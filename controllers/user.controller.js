@@ -76,7 +76,7 @@ module.exports = {
           .populate('exercises')
           .exec(function (err, user) {
           if (err) throw Error(err)
-          res.json(
+          return res.json(
             {
               user,
               count: user.exercises.length
@@ -88,7 +88,7 @@ module.exports = {
         .populate('exercises')
         .exec(function (err, user) {
           if (err) throw Error(err)
-          res.json(
+          return res.json(
             {
               user,
               count: user.exercises.length
@@ -96,6 +96,42 @@ module.exports = {
           )
         })
       }
+      // date has been passed
+
+
+      await User.findOne({ _id: req.body.userId})
+        .populate('exercises')
+        .exec(function (err, user) {
+          if (err) throw Error(err)
+          const filteredExercises = user.exercises
+          if (fromDate ) {
+            filteredExercises = filteredExercises.filter(exercise => {
+              exercise.date > new Date(fromDate)
+            })
+          }
+          if (toDate ) {
+            filteredExercises = filteredExercises.filter(exercise => {
+              exercise.date < new Date(toDate)
+            })
+          }
+          filteredExercises = filteredExercises
+          .sort((currentExercise, nextExercise) => currentExercise.date > nextExercise.date)
+          .map(exercise => ({
+            description: exercise.description,
+            duration: exercise.duration,
+            date: exercise.date.toLocaleDateString()
+         }));
+          res.json(
+            {
+              user: {
+                _id: user._id,
+                username: user.username,
+                exercises: filteredExercises
+              },
+              count: user.exercises.length
+            }
+          )
+        })
 
     } catch (error) {
       res.json(
