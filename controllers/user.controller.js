@@ -65,5 +65,26 @@ module.exports = {
     } catch (error) {
       res.json({ error: error.message })
     }
+  },
+  getExerciseLog: async (req, res) => {
+    try {
+      await User.findOne({ _id: req.body.userId })
+        .populate('exercises')
+        .exec(function (err, user) {
+          if (err) throw Error(err)
+          res.json(
+            {
+              user,
+              count: user.exercises.length
+            }
+          )
+        })
+    } catch (error) {
+      res.json(
+        {
+          error: error.message
+        }
+      )
+    }
   }
 }
