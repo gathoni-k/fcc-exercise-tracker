@@ -68,7 +68,9 @@ module.exports = {
   },
   getExerciseLog: async (req, res) => {
     try {
-      await User.findOne({ _id: req.body.userId })
+      const { fromDate, toDate, limit } = req.query;
+      if (!fromDate || !toDate) {
+        await User.findOne({ _id: req.body.userId })
         .populate('exercises')
         .exec(function (err, user) {
           if (err) throw Error(err)
@@ -79,6 +81,8 @@ module.exports = {
             }
           )
         })
+      }
+
     } catch (error) {
       res.json(
         {
