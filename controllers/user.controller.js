@@ -132,7 +132,6 @@ module.exports = {
             }
           )
         })
-
     } catch (error) {
       res.json(
         {
